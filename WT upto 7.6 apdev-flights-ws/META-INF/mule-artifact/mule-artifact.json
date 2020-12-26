@@ -1,0 +1,36 @@
+{
+  "configs": [
+    "implementation.xml",
+    "interface.xml",
+    "global.xml"
+  ],
+  "secureProperties": [],
+  "redeploymentEnabled": true,
+  "name": "com.mycompany:apdev-flights-ws:1.0.0-SNAPSHOT",
+  "minMuleVersion": "4.3.0",
+  "requiredProduct": "MULE",
+  "classLoaderModelLoaderDescriptor": {
+    "id": "mule",
+    "attributes": {
+      "exportedPackages": [
+        "com.mulesoft.training"
+      ],
+      "exportedResources": [
+        "api/MUA Flights API/datatypes/Flight.raml",
+        "api/MUA Flights API/examples/FlightExample.raml",
+        "api/MUA Flights API/examples/FlightNoIDExample.raml",
+        "api/MUA Flights API/examples/FlightsExample.raml",
+        "api/MUA Flights API/mua-flights-api.raml",
+        "config.yaml",
+        "global.xml",
+        "implementation.xml",
+        "interface.xml",
+        "log4j2.xml"
+      ]
+    }
+  },
+  "bundleDescriptorLoader": {
+    "id": "mule",
+    "attributes": {}
+  }
+}
