@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<configuration-properties doc:name="Configuration properties" doc:id="03018aa4-6097-4900-9c54-ed04bee4fbe5" file="config.yaml" />
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="dfe67dc9-7de9-4a97-b863-acd49f9c558b" >
+		<http:listener-connection host="0.0.0.0" port="${http.port}" />
+	</http:listener-config>
+	<configuration doc:name="Configuration" doc:id="89eb05c9-9ea3-4418-b089-08a7cb8cd935" defaultErrorHandler-ref="globalError_Handler" />
+	<error-handler name="globalError_Handler" doc:id="bec6ec74-c894-4b06-bcb0-bb00ad40e58d" >
+	<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="96501ba3-7015-4fe6-ba1e-b4fe25bb9efd" type="APP:INVALID_DESTINATION">
+				<ee:transform doc:name="Transform Message" doc:id="e8de711c-fa37-4e0e-a6f1-1e5645f83df3" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": error.description
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="400" doc:name="httpStatus" doc:id="7b3c7f8b-9900-4c77-bc82-27265eb02203" variableName="httpStatus"/>
+			</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="4898771b-ff6a-427a-b4a9-ad840671eace" type="WSC:CONNECTIVITY,WSC:INVALID_WSDL">
+			<ee:transform doc:name="Transform Message" doc:id="3f984b2d-c082-4790-b5c3-66437d6a39bc" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message":"Data unavailable. Try later."  
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<set-variable value="500" doc:name="httpStatus" doc:id="3cdd6bb8-0127-4448-82c4-f1716dd608f9" variableName="httpStatus"/>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="077f2a57-4f68-4f6c-af67-51e227dd5e40" type="ANY">
+			<ee:transform doc:name="Transform Message" doc:id="e3f85d76-e22e-48a8-9ffd-bd62d203eda3">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": error.description
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<set-variable value="500" doc:name="httpStatus" doc:id="6d5fff0e-188e-489a-a4e7-cce8b26d0672" variableName="httpStatus"/>
+		</on-error-continue>
+	</error-handler>
+</mule>
